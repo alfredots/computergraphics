@@ -11,24 +11,33 @@ class Line{
         this.y2 = cy;
     }  
 
-    translate(){
+    translate(cx, cy){
         console.log("function translate");
         
-        let tx = -100;
-        let ty = -100;
+        let tx = cx;
+        let ty = cy;
         let matrix1 = [[1,0,tx],
                        [0,1,ty],
                        [0,0,1]
                      ];
 
         let matrix2 = [[this.x1],
-                       [this.x2],
-                       [1]];
+                       [this.y1],
+                       [1]];                       
 
         var newPositions = multiplyMatriz(matrix1,matrix2);
         console.log(newPositions);
         this.x1 = newPositions.x;
         this.y1 = newPositions.y;
+
+        let matrix3 = [[this.x2],
+                       [this.y2],
+                       [1]];
+        
+        var newPositions2 = multiplyMatriz(matrix1,matrix3);
+        console.log(newPositions);
+        this.x2 = newPositions2.x;
+        this.y2 = newPositions2.y;
     }
 
     draw(){

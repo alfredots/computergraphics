@@ -46,7 +46,7 @@ function onDown(e){
             for (let index = 0; index < shapes.length; index++) {
                 if(shapes[index] instanceof Line){
                     console.log("entrei aqui");
-                    shapes[index].translate();
+                    shapes[index].translate(cx,cy);
                     shapes[index].draw();
                 }
             }
