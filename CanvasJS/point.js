@@ -1,12 +1,13 @@
 class Point{
-    constructor(){
+    constructor(cx, cy){
+        this.x = cx;
+        this.y = cy;
     }
 
-    draw(cx, cy){
+    draw(){
         context.beginPath();
-        context.fillRect(cx, cy, 4, 4);
+        context.fillRect(this.x, this.y, 4, 4);
         context.closePath();
     }
 
 }
-var point = new Point();
