@@ -3,14 +3,19 @@ var context = canvas.getContext('2d');
 
 var btnCurrentAction = "none";
 var numberOfClicks = 0;
+var cx;
+var cy;
+var mousePressed = false;
 var shapes = [];
 var shape;
 
-function onDown(e){
 
-    var cx = event.clientX - canvas.offsetLeft;
-    var cy = event.clientY - canvas.offsetTop;
+function onDown(event){
 
+    cx = event.clientX - canvas.offsetLeft;
+    cy = event.clientY - canvas.offsetTop;
+
+    mousePressed = true;
     switch (btnCurrentAction) {
         case "Point":
             if(numberOfClicks == 0){
@@ -34,7 +39,7 @@ function onDown(e){
         case "Circle":
             if(numberOfClicks == 0){
                 shape = new Circle(cx, cy);
-                shapes.push(shape); 
+                shapes.push(shape);
                 numberOfClicks++;       
             }else if(numberOfClicks == 1){
                 shape.addSecondPoint(cx,cy);
@@ -42,21 +47,44 @@ function onDown(e){
                 numberOfClicks = 0;
             }
             break;
-        case "translate":
-            for (let index = 0; index < shapes.length; index++) {
-                if(shapes[index] instanceof Line){
-                    console.log("entrei aqui");
-                    shapes[index].translate(cx,cy);
-                    shapes[index].draw();
-                }
-            }
-            break;
-        default:
-            break;
     }
 
-    console.log(shapes);
-    
+}
+
+function onUp(){
+    mousePressed = false;
+}
+
+function onMove(event){
+
+    if(mousePressed){
+        switch (btnCurrentAction) {
+            case "translate":
+                var x = (event.clientX - context.canvas.offsetLeft) - cx;
+                var y = (event.clientY - context.canvas.offsetTop) - cy;
+                context.save();
+
+                var backCanvas = document.createElement('canvas');
+                backCanvas.width = canvas.width;
+                backCanvas.height = canvas.height;
+                var backContext = backCanvas.getContext('2d');
+                backContext.drawImage(canvas,0,0);
+
+                context.transform(1,0,
+                                  0,1,
+                                  x,y);
+
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.drawImage(backCanvas, 0, 0);
+                context.restore();
+
+                cx = event.clientX - context.canvas.offsetLeft;
+                cy = event.clientY - context.canvas.offsetTop;
+                console.log("rodei tudo");
+                break;
+        }
+    }
+
 }
 
 document.getElementById('btnPoint').addEventListener('click', function(){
@@ -75,6 +103,13 @@ document.getElementById('btnTranslate').addEventListener('click', function(){
     btnCurrentAction = "translate";
 })
 
-canvas.addEventListener("click", onDown);
+document.getElementById('btnClear').addEventListener('click', function (){
+    btnCurrentAction = "clear";
+    context.clearRect(0, 0, canvas.width, canvas.height);
+})
+
+canvas.addEventListener("mousedown", onDown);
+canvas.addEventListener("mouseup", onUp);
+canvas.addEventListener("mousemove", onMove);
 
 
