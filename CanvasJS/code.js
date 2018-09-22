@@ -48,7 +48,7 @@ function onDown(event){
             }
             break;
     }
-
+    console.log(shapes);
 }
 
 function onUp(){
@@ -60,9 +60,8 @@ function onMove(event){
     if(mousePressed){
         switch (btnCurrentAction) {
             case "translate":
-                var x = (event.clientX - context.canvas.offsetLeft) - cx;
-                var y = (event.clientY - context.canvas.offsetTop) - cy;
-                context.save();
+                let x = (event.clientX - context.canvas.offsetLeft)-cy;
+                let y = (event.clientY - context.canvas.offsetTop)-cx;
 
                 var backCanvas = document.createElement('canvas');
                 backCanvas.width = canvas.width;
@@ -70,17 +69,45 @@ function onMove(event){
                 var backContext = backCanvas.getContext('2d');
                 backContext.drawImage(canvas,0,0);
 
-                context.transform(1,0,
-                                  0,1,
-                                  x,y);
+                let id = 0;
+                for (let i = 0; i < shapes.length; i++) {
+                    if(shapes[i] instanceof Point){
+                        if(shapes[i].pick(cx, cy, 5)){
+                            shapes[i].translate(x, y);
+                            id = i;
+                        }
+                    }
+                }
 
                 context.clearRect(0, 0, canvas.width, canvas.height);
                 context.drawImage(backCanvas, 0, 0);
+                shapes[id].draw();
                 context.restore();
 
                 cx = event.clientX - context.canvas.offsetLeft;
                 cy = event.clientY - context.canvas.offsetTop;
-                console.log("rodei tudo");
+
+                /*                var x = (event.clientX - context.canvas.offsetLeft) - cx;
+                                var y = (event.clientY - context.canvas.offsetTop) - cy;
+                                context.save();
+
+                                var backCanvas = document.createElement('canvas');
+                                backCanvas.width = canvas.width;
+                                backCanvas.height = canvas.height;
+                                var backContext = backCanvas.getContext('2d');
+                                backContext.drawImage(canvas,0,0);
+
+                                context.transform(1,0,
+                                                  0,1,
+                                                  x,y);
+
+                                context.clearRect(0, 0, canvas.width, canvas.height);
+                                context.drawImage(backCanvas, 0, 0);
+                                context.restore();
+
+                                cx = event.clientX - context.canvas.offsetLeft;
+                                cy = event.clientY - context.canvas.offsetTop;
+                                console.log("rodei tudo");*/
                 break;
         }
     }
