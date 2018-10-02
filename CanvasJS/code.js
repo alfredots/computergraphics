@@ -6,14 +6,15 @@ var numberOfClicks = 0;
 var cx;
 var cy;
 var mousePressed = false;
+var shapeDragging = false;
 var shapes = [];
 var shape;
 
 
 function onDown(event){
 
-    cx = event.clientX - canvas.offsetLeft;
-    cy = event.clientY - canvas.offsetTop;
+    cx = event.clientX - context.canvas.offsetLeft;
+    cy = event.clientY - context.canvas.offsetTop;
 
     mousePressed = true;
     switch (btnCurrentAction) {
@@ -47,8 +48,23 @@ function onDown(event){
                 numberOfClicks = 0;
             }
             break;
+        case "Polygon":
+            console.log("poly");
+            if(numberOfClicks == 0){
+                shape = new Polygon();
+                shape.addPoint(cx,cy);
+                shape.draw(numberOfClicks);
+                shapes.push(shape);
+                numberOfClicks++;
+            }else{
+                if(shape.checkEnd(cx,cy))
+                    shape.draw(0);
+                shape.addPoint(cx,cy);
+                shape.draw(numberOfClicks);
+                numberOfClicks++;
+            }
+            break;
     }
-    console.log(shapes);
 }
 
 function onUp(){
@@ -57,57 +73,45 @@ function onUp(){
 
 function onMove(event){
 
+
     if(mousePressed){
+
         switch (btnCurrentAction) {
             case "translate":
-                let x = (event.clientX - context.canvas.offsetLeft)-cy;
-                let y = (event.clientY - context.canvas.offsetTop)-cx;
-
+                let x = (event.clientX - context.canvas.offsetLeft)-cx;
+                let y = (event.clientY - context.canvas.offsetTop)-cy;
+                context.save();
+                
                 var backCanvas = document.createElement('canvas');
                 backCanvas.width = canvas.width;
                 backCanvas.height = canvas.height;
                 var backContext = backCanvas.getContext('2d');
                 backContext.drawImage(canvas,0,0);
 
-                let id = 0;
                 for (let i = 0; i < shapes.length; i++) {
+                    //POINT
                     if(shapes[i] instanceof Point){
                         if(shapes[i].pick(cx, cy, 5)){
                             shapes[i].translate(x, y);
-                            id = i;
+                        }
+                    }
+                    //LINE
+                    if(shapes[i] instanceof  Line){
+                        console.log(shapes[i].pick(cx, cy, 20));
+                        if(shapes[i].pick(cx, cy, 5)){
+                            shapes[i].translate(x,y);
                         }
                     }
                 }
 
                 context.clearRect(0, 0, canvas.width, canvas.height);
-                context.drawImage(backCanvas, 0, 0);
-                shapes[id].draw();
                 context.restore();
+                for (let i = 0; i < shapes.length; i++) {
+                    shapes[i].draw();
+                }
 
                 cx = event.clientX - context.canvas.offsetLeft;
                 cy = event.clientY - context.canvas.offsetTop;
-
-                /*                var x = (event.clientX - context.canvas.offsetLeft) - cx;
-                                var y = (event.clientY - context.canvas.offsetTop) - cy;
-                                context.save();
-
-                                var backCanvas = document.createElement('canvas');
-                                backCanvas.width = canvas.width;
-                                backCanvas.height = canvas.height;
-                                var backContext = backCanvas.getContext('2d');
-                                backContext.drawImage(canvas,0,0);
-
-                                context.transform(1,0,
-                                                  0,1,
-                                                  x,y);
-
-                                context.clearRect(0, 0, canvas.width, canvas.height);
-                                context.drawImage(backCanvas, 0, 0);
-                                context.restore();
-
-                                cx = event.clientX - context.canvas.offsetLeft;
-                                cy = event.clientY - context.canvas.offsetTop;
-                                console.log("rodei tudo");*/
                 break;
         }
     }
@@ -124,6 +128,10 @@ document.getElementById('btnLine').addEventListener('click', function(){
 
 document.getElementById('btnCircle').addEventListener('click', function(){
     btnCurrentAction = "Circle";
+})
+
+document.getElementById('btnPolygon').addEventListener('click', function(){
+    btnCurrentAction = "Polygon";
 })
 
 document.getElementById('btnTranslate').addEventListener('click', function(){

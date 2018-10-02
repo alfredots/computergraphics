@@ -2,6 +2,11 @@ class Point{
     constructor(cx, cy){
         this.x = cx;
         this.y = cy;
+        this.color = "black";
+    }
+
+    setColor(color){
+        this.color = color;
     }
 
     draw(){
@@ -28,7 +33,6 @@ class Point{
                         [0,1,dy],
                         [0,0,1]
                         ];
-
         let matrix2 = [[this.x],
                         [this.y],
                             [1]];
