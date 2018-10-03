@@ -1,3 +1,4 @@
+
 var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');
 
@@ -57,11 +58,14 @@ function onDown(event){
                 shapes.push(shape);
                 numberOfClicks++;
             }else{
-                if(shape.checkEnd(cx,cy))
+                if(shape.checkEnd(cx,cy)){
                     shape.draw(0);
-                shape.addPoint(cx,cy);
-                shape.draw(numberOfClicks);
-                numberOfClicks++;
+                    numberOfClicks = 0;
+                }else{
+                    shape.addPoint(cx,cy);
+                    shape.draw(numberOfClicks);
+                    numberOfClicks++;     
+                }
             }
             break;
     }
@@ -107,7 +111,15 @@ function onMove(event){
                 context.clearRect(0, 0, canvas.width, canvas.height);
                 context.restore();
                 for (let i = 0; i < shapes.length; i++) {
-                    shapes[i].draw();
+                    if(shapes[i] instanceof Polygon){
+                        var totalCoords = shapes[i].getTotalCoords();
+                        for (let j = 0; j < totalCoords; j++) {
+                            shapes[i].draw(j);
+                        }
+                        shapes[i].draw(0);
+                    }else{
+                        shapes[i].draw();
+                    }
                 }
 
                 cx = event.clientX - context.canvas.offsetLeft;
