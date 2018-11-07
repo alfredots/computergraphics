@@ -52,6 +52,7 @@ function onDown(event){
         case "Polygon":
             console.log("poly");
             if(numberOfClicks == 0){
+                console.log("criei poligono")
                 shape = new Polygon();
                 shape.addPoint(cx,cy);
                 shape.draw(numberOfClicks);
@@ -104,6 +105,13 @@ function onMove(event){
                         console.log(shapes[i].pick(cx, cy, 20));
                         if(shapes[i].pick(cx, cy, 5)){
                             shapes[i].translate(x,y);
+                        }
+                    }
+
+                    //POLYGON
+                    if(shapes[i] instanceof  Polygon){
+                        if(shapes[i].pick(cx, cy)){
+                            console.log("funcionou!!");
                         }
                     }
                 }

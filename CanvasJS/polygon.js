@@ -20,7 +20,6 @@ class Polygon {
             if(((this.coord[0].y-t) <= my) && (my <= (this.coord[0].y+t))){
                 console.log("fechou poly");
                 return true;
-
             }
         }
         return false;
@@ -43,10 +42,49 @@ class Polygon {
         else{
             console.log("teste");
             context.lineTo(this.coord[i].x, this.coord[i].y);
-        }
-            
 
+        }
         context.stroke();
+    }
+
+    pick(mx, my){
+
+        let ni = 0;
+        let fst = this.coord.length -1;
+        let xc
+        let p1, p2
+
+        for(let i =0; i < this.coord.length; i++){
+            p1 = this.coord[i];
+            p2 = this.coord[fst];
+
+            if(!(p1.y == p2.y) && !((p1.y > my) && (p2.y > my)) &&
+                !((p1.y < my) && (p2.y < my)) && !((p1.x < mx) && (p2.x < mx))){
+                if(p1.y == my){
+                    if((p1.x > mx) && (p2.y > my))
+                        ni++;
+                }else{
+                    if(p2.y == my){
+                        if((p2.x > mx) && (p1.y > my))
+                            ni++;
+                    }else{
+                        if((p1.x > mx) && (p2.x > mx)) {
+                            ni++;
+                        }else{
+                            let dx = p1.x - p2.x;
+                            xc = p1.x;
+                            if( dx != 0){
+                                xc += (my - p1.y) * dx / (p1.y - p2.y);
+                                if(xc > mx)
+                                    ni++;
+                            }
+                        }
+                    }
+                }
+            }
+            fst = i;
+        }
+        return(ni%2);
     }
 
 }
