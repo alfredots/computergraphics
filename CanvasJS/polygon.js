@@ -33,8 +33,7 @@ class Polygon {
             context.beginPath();
             context.moveTo(this.coord[0].x, this.coord[0].y);
             this.start = true;
-        }else if((i == 0) && this.start){
-            console.log("fim");
+        }else if(this.checkEnd(this.coord[i].x, this.coord[i].y)){
             context.lineTo(this.coord[0].x, this.coord[0].y);
             context.closePath();
             this.start = false;
@@ -45,6 +44,39 @@ class Polygon {
 
         }
         context.stroke();
+    }
+
+    drawMe() {
+
+        for(let i = 0; i < this.coord.length; i++){
+            if(i == 0)
+                context.beginPath();
+            context.moveTo(this.coord[i].x, this.coord[i].y);
+            context.lineTo(this.coord[i].x, this.coord[i].y);
+            if(i == (this.coord.length - 1))
+                context.closePath();
+
+        }
+    }
+
+    translate(cx, cy){
+        let tx = cx;
+        let ty = cy;
+
+        for(let i = 0; i < this.coord.length; i++){
+            let matrix1 = [[1,0,tx],
+                            [0,1,ty],
+                            [0,0,1]];
+            let matrix2 = [[this.coord[i].x],
+                            [this.coord[i].y],
+                            [1]];
+
+            var newPositions = multiplyMatriz(matrix1, matrix2);
+            this.coord[i].x = newPositions.x;
+            this.coord[i].y = newPositions.y;
+        }
+
+        this.drawMe();
     }
 
     pick(mx, my){

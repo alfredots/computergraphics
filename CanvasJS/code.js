@@ -77,8 +77,6 @@ function onUp(){
 }
 
 function onMove(event){
-
-
     if(mousePressed){
 
         switch (btnCurrentAction) {
@@ -111,7 +109,7 @@ function onMove(event){
                     //POLYGON
                     if(shapes[i] instanceof  Polygon){
                         if(shapes[i].pick(cx, cy)){
-                            console.log("funcionou!!");
+                            shapes[i].translate(x, y);
                         }
                     }
                 }
