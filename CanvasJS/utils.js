@@ -11,6 +11,6 @@ function multiplyMatriz(matrix1, matrix2){
         console.log(result);
         matrix3[i][0] = result;
     }
-    
+    console.log(matrix3);
     return {x:matrix3[0][0], y:matrix3[1][0]}
 }

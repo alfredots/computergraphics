@@ -79,6 +79,26 @@ class Polygon {
         this.drawMe();
     }
 
+    rotatePlus(){
+        let sen = 0.087; //sen 5
+        let cos = 0.996; //cos 5
+        let matrix1 = [[cos, -sen, 0],
+            [sen, cos, 0],
+            [0,0,1]];
+
+        for(let i = 0; i < this.coord.length; i++){
+            let matrix2 = [[this.coord[i].x],
+                [this.coord[i].y],
+                [1]];
+
+            let newPositions = multiplyMatriz(matrix1,matrix2);
+            this.coord[i].x = newPositions.x;
+            this.coord[i].y = newPositions.y;
+        }
+
+        this.drawMe();
+    }
+
     pick(mx, my){
 
         let ni = 0;
