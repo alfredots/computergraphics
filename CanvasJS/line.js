@@ -1,66 +1,26 @@
 class Line{
     constructor(cx,cy){
-        this.x1 = cx;
-        this.x2 = null;
-        this.y1 = cy;
-        this.y2 = null;
+        this.point1 = new Point(cx,cy);
+        this.point2;
     }
 
     addSecondPoint(cx, cy){
-        this.x2 = cx;
-        this.y2 = cy;
+        this.point2 = new Point(cx,cy);
     }  
 
     translate(cx, cy){
-        let tx = cx;
-        let ty = cy;
-        let matrix1 = [[1,0,tx],
-                       [0,1,ty],
-                       [0,0,1]
-                     ];
-
-        let matrix2 = [[this.x1],
-                       [this.y1],
-                       [1]];                       
-
-        var newPositions = multiplyMatriz(matrix1,matrix2);
-        console.log(newPositions);
-        this.x1 = newPositions.x;
-        this.y1 = newPositions.y;
-
-        let matrix3 = [[this.x2],
-                       [this.y2],
-                       [1]];
-        
-        var newPositions2 = multiplyMatriz(matrix1,matrix3);
-        console.log(newPositions);
-        this.x2 = newPositions2.x;
-        this.y2 = newPositions2.y;
+        this.point1.translate(cx, cy);
+        this.point2.translate(cx, cy);
     }
 
-    rotatePlus(){
+    rotate(dx,dy){
+        this.point1.rotate(dx,dy);
+        this.point2.rotate(dx,dy);
+    }
 
-        let sen = 0.087; //sen 5
-        let cos = 0.996; //cos 5
-        let matrix1 = [[cos, -sen, 0],
-            [sen, cos, 0],
-            [0,0,1]];
-
-        let matrix2 = [[this.x1],
-            [this.y1],
-            [1]];
-
-        let newPositions = multiplyMatriz(matrix1,matrix2);
-        this.x1 = newPositions.x;
-        this.y1 = newPositions.y;
-
-        let matrix3 = [[this.x2],
-            [this.y2],
-            [1]];
-
-        let newPositions2 = multiplyMatriz(matrix1,matrix3);
-        this.x2 = newPositions2.x;
-        this.y2 = newPositions2.y;
+    scale(dx, dy){
+        this.point1.scale(dx,dy);
+        this.point2.scale(dx,dy);
     }
 
     pickCode(x, y, xmin, xmax, ymin, ymax){
@@ -75,8 +35,8 @@ class Line{
 
     pick(mx,my,t){
         let cod0, cod1, j;
-        let x0 = this.x1, x1 = this.x2;
-        let y0 = this.y1, y1 = this.y2;
+        let x0 = this.point1.x, x1 = this.point2.x;
+        let y0 = this.point1.y, y1 = this.point2.y;
         let xmin,xmax,ymin,ymax;
 
         xmin = mx - t;
@@ -114,8 +74,8 @@ class Line{
 
     draw(){
         context.beginPath();
-        context.moveTo(this.x1, this.y1);
-        context.lineTo(this.x2, this.y2);
+        context.moveTo(this.point1.x, this.point1.y);
+        context.lineTo(this.point2.x, this.point2.y);
         context.stroke();
         context.closePath();
     }

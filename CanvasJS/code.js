@@ -133,7 +133,7 @@ function onMove(event){
                 cy = event.clientY - context.canvas.offsetTop;
                 break;
             //ROTATION PLUS
-            case "rotate +":
+            case "rotate":
                 console.log("rotate plus");
                 var x = (event.clientX - context.canvas.offsetLeft)-cx;
                 var y = (event.clientY - context.canvas.offsetTop)-cy;
@@ -149,21 +149,74 @@ function onMove(event){
                     //POINT
                     if(shapes[i] instanceof Point){
                         if(shapes[i].pick(cx, cy, 5)){
-                            shapes[i].rotatePlus();
+                            shapes[i].rotate(cx,cy);
                         }
                     }
                     //LINE
                     if(shapes[i] instanceof  Line){
                         console.log(shapes[i].pick(cx, cy, 20));
                         if(shapes[i].pick(cx, cy, 5)){
-                            shapes[i].rotatePlus();
+                            shapes[i].rotate(cx, cy);
                         }
                     }
 
                     //POLYGON
                     if(shapes[i] instanceof  Polygon){
                         if(shapes[i].pick(cx, cy)){
-                            shapes[i].rotatePlus();
+                            shapes[i].rotate(cx, cy);
+                        }
+                    }
+                }
+
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.restore();
+                for (let i = 0; i < shapes.length; i++) {
+                    if(shapes[i] instanceof Polygon){
+                        var totalCoords = shapes[i].getTotalCoords();
+                        for (let j = 0; j < totalCoords; j++) {
+                            shapes[i].draw(j);
+                        }
+                        shapes[i].draw(0);
+                    }else{
+                        shapes[i].draw();
+                    }
+                }
+
+                cx = event.clientX - context.canvas.offsetLeft;
+                cy = event.clientY - context.canvas.offsetTop;
+                break;
+                //
+            case "scale":
+                console.log("scale");
+                var x = (event.clientX - context.canvas.offsetLeft)-cx;
+                var y = (event.clientY - context.canvas.offsetTop)-cy;
+                context.save();
+
+                var backCanvas = document.createElement('canvas');
+                backCanvas.width = canvas.width;
+                backCanvas.height = canvas.height;
+                var backContext = backCanvas.getContext('2d');
+                backContext.drawImage(canvas,0,0);
+
+                for (let i = 0; i < shapes.length; i++) {
+                    //POINT
+                    if(shapes[i] instanceof Point){
+                        if(shapes[i].pick(cx, cy, 5)){
+                            shapes[i].scale(cx,cy);
+                        }
+                    }
+                    //LINE
+                    if(shapes[i] instanceof  Line){
+                        console.log(shapes[i].pick(cx, cy, 20));
+                        if(shapes[i].pick(cx, cy, 5)){
+                            shapes[i].scale(cx, cy);
+                        }
+                    }
+
+                    //POLYGON
+                    if(shapes[i] instanceof  Polygon){
+                        if(shapes[i].pick(cx, cy)){
+                            shapes[i].scale(cx, cy);
                         }
                     }
                 }
@@ -209,17 +262,19 @@ document.getElementById('btnTranslate').addEventListener('click', function(){
     btnCurrentAction = "translate";
 })
 
-document.getElementById('btnRotate+').addEventListener('click', function(){
-    btnCurrentAction = "rotate +";
+document.getElementById('btnRotate').addEventListener('click', function(){
+    btnCurrentAction = "rotate";
 })
 
-document.getElementById('btnRotate-').addEventListener('click', function(){
-    btnCurrentAction = "rotate -";
+document.getElementById('btnScale').addEventListener('click', function(){
+    btnCurrentAction = "scale";
 })
+
 
 document.getElementById('btnClear').addEventListener('click', function (){
     btnCurrentAction = "clear";
     context.clearRect(0, 0, canvas.width, canvas.height);
+    shapes = [];
 })
 
 canvas.addEventListener("mousedown", onDown);

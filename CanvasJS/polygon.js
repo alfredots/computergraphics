@@ -10,7 +10,7 @@ class Polygon {
     }
 
     addPoint(x,y){
-        this.coord.push({'x':x,'y':y});
+        this.coord.push(new Point(x,y));
     }
 
     checkEnd(mx, my){
@@ -60,42 +60,25 @@ class Polygon {
     }
 
     translate(cx, cy){
-        let tx = cx;
-        let ty = cy;
 
         for(let i = 0; i < this.coord.length; i++){
-            let matrix1 = [[1,0,tx],
-                            [0,1,ty],
-                            [0,0,1]];
-            let matrix2 = [[this.coord[i].x],
-                            [this.coord[i].y],
-                            [1]];
-
-            var newPositions = multiplyMatriz(matrix1, matrix2);
-            this.coord[i].x = newPositions.x;
-            this.coord[i].y = newPositions.y;
+            this.coord[i].translate(cx,cy);
         }
 
         this.drawMe();
     }
 
-    rotatePlus(){
-        let sen = 0.087; //sen 5
-        let cos = 0.996; //cos 5
-        let matrix1 = [[cos, -sen, 0],
-            [sen, cos, 0],
-            [0,0,1]];
-
+    rotate(cx, cy){
         for(let i = 0; i < this.coord.length; i++){
-            let matrix2 = [[this.coord[i].x],
-                [this.coord[i].y],
-                [1]];
-
-            let newPositions = multiplyMatriz(matrix1,matrix2);
-            this.coord[i].x = newPositions.x;
-            this.coord[i].y = newPositions.y;
+            this.coord[i].rotate(cx, cy);
         }
+        this.drawMe();
+    }
 
+    scale(cx,cy){
+        for(let i = 0; i < this.coord.length; i++){
+            this.coord[i].scale(cx, cy);
+        }
         this.drawMe();
     }
 

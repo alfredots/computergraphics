@@ -45,13 +45,15 @@ class Point{
         this.y = newPositions.y;
     }
 
-    rotatePlus(){
+    rotate(dx, dy){
 
-        let sen = 0.087; //sen 5
-        let cos = 0.996; //cos 5
+        let sen = 0.173; //sen 10
+        let cos = 0.984; //cos 10
         let matrix1 = [[cos, -sen, 0],
                         [sen, cos, 0],
                         [0,0,1]];
+
+        this.translate(-dx, -dy);
 
         let matrix2 = [[this.x],
                         [this.y],
@@ -60,7 +62,25 @@ class Point{
         let newPositions = multiplyMatriz(matrix1,matrix2);
         this.x = newPositions.x;
         this.y = newPositions.y;
+
+        this.translate(dx, dy);
     }
 
+    scale(dx, dy){
+
+        let matrix1 = [[2, 0, 0,],
+                        [0, 2, 0],
+                        [0, 0, 1]];
+
+        let matrix2 = [[this.x],
+            [this.y],
+            [1]];
+
+        this.translate(-dx, -dy);
+        let newPositions = multiplyMatriz(matrix1,matrix2);
+        this.x = newPositions.x;
+        this.y = newPositions.y;
+        this.translate(dx, dy);
+    }
 
 }
