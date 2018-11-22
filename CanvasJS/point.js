@@ -2,16 +2,13 @@ class Point{
     constructor(cx, cy){
         this.x = cx;
         this.y = cy;
-        this.color = "black";
-    }
-
-    setColor(color){
-        this.color = color;
+        this.w = 4;
+        this.h = 4;
     }
 
     draw(){
         context.beginPath();
-        context.fillRect(this.x, this.y, 4, 4);
+        context.fillRect(this.x, this.y, this.w, this.h);
         context.closePath();
     }
 
@@ -30,7 +27,6 @@ class Point{
         let tx = dx;
         let ty = dy;
 
-
         let matrix1 = [[1,0,dx],
                         [0,1,dy],
                         [0,0,1]
@@ -39,21 +35,20 @@ class Point{
                         [this.y],
                             [1]];
 
-
         let newPositions = multiplyMatriz(matrix1,matrix2);
         this.x = newPositions.x;
         this.y = newPositions.y;
     }
 
-    rotate(dx, dy){
+    rotate(cx, cy){
 
-        let sen = 0.173; //sen 10
-        let cos = 0.984; //cos 10
+        let sen = Math.sin(0.1);
+        let cos = Math.cos(0.1);
         let matrix1 = [[cos, -sen, 0],
                         [sen, cos, 0],
                         [0,0,1]];
 
-        this.translate(-dx, -dy);
+        this.translate(-cx, -cy);
 
         let matrix2 = [[this.x],
                         [this.y],
@@ -63,7 +58,7 @@ class Point{
         this.x = newPositions.x;
         this.y = newPositions.y;
 
-        this.translate(dx, dy);
+        this.translate(cx, cy);
     }
 
     scale(dx, dy){
@@ -75,6 +70,9 @@ class Point{
         let matrix2 = [[this.x],
             [this.y],
             [1]];
+
+        this.w = this.w*1.5;
+        this.h = this.h*1.5;
 
         this.translate(-dx, -dy);
         let newPositions = multiplyMatriz(matrix1,matrix2);

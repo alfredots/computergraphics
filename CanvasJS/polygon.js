@@ -48,15 +48,19 @@ class Polygon {
 
     drawMe() {
 
+
         for(let i = 0; i < this.coord.length; i++){
-            if(i == 0)
+            if(i == 0){
                 context.beginPath();
+            }
+
             context.moveTo(this.coord[i].x, this.coord[i].y);
             context.lineTo(this.coord[i].x, this.coord[i].y);
             if(i == (this.coord.length - 1))
                 context.closePath();
 
         }
+        context.stroke();
     }
 
     translate(cx, cy){

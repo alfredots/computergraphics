@@ -6,21 +6,21 @@ class Line{
 
     addSecondPoint(cx, cy){
         this.point2 = new Point(cx,cy);
-    }  
+    }
 
     translate(cx, cy){
         this.point1.translate(cx, cy);
         this.point2.translate(cx, cy);
     }
 
-    rotate(dx,dy){
-        this.point1.rotate(dx,dy);
-        this.point2.rotate(dx,dy);
+    rotate(cx, cy){
+        this.point1.rotate(cx, cy);
+        this.point2.rotate(cx, cy);
     }
 
-    scale(dx, dy){
-        this.point1.scale(dx,dy);
-        this.point2.scale(dx,dy);
+    scale(cx, cy){
+        this.point1.scale(cx, cy);
+        this.point2.scale(cx, cy);
     }
 
     pickCode(x, y, xmin, xmax, ymin, ymax){
@@ -73,6 +73,7 @@ class Line{
     }
 
     draw(){
+
         context.beginPath();
         context.moveTo(this.point1.x, this.point1.y);
         context.lineTo(this.point2.x, this.point2.y);
