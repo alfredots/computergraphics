@@ -4,12 +4,22 @@ class Point{
         this.y = cy;
         this.w = 4;
         this.h = 4;
+        this.color = "black";
     }
 
     draw(){
         context.beginPath();
+        context.fillStyle = this.color;
         context.fillRect(this.x, this.y, this.w, this.h);
         context.closePath();
+    }
+
+    selected(){
+        this.color = "red";
+    }
+
+    restore(){
+        this.color = "black";
     }
 
     pick(mx, my, t){
@@ -63,22 +73,20 @@ class Point{
 
     scale(dx, dy){
 
-        let matrix1 = [[2, 0, 0,],
-                        [0, 2, 0],
+        let matrix1 = [[1.1, 0, 0,],
+                        [0, 1.1, 0],
                         [0, 0, 1]];
 
         let matrix2 = [[this.x],
             [this.y],
             [1]];
 
-        this.w = this.w*1.5;
-        this.h = this.h*1.5;
 
         this.translate(-dx, -dy);
         let newPositions = multiplyMatriz(matrix1,matrix2);
         this.x = newPositions.x;
         this.y = newPositions.y;
-        this.translate(dx, dy);
+        this.translate(this.x-dx, this.y-dy);
     }
 
 }

@@ -3,6 +3,7 @@ class Polygon {
     constructor(){
         this.coord = [];
         this.start = false;
+        this.color = "black";
     }
     
     getTotalCoords(){
@@ -13,54 +14,46 @@ class Polygon {
         this.coord.push(new Point(x,y));
     }
 
-    checkEnd(mx, my){
-        let t = 10;
+    drawning(){
+        console.log("coords total: "+this.getTotalCoords());
+        // if(i == 0 && !this.start) {
+        //     context.beginPath();
+        //     context.strokeStyle = this.color;
+        //     context.moveTo(this.coord[0].x, this.coord[0].y);
+        //     this.start = true;
+        // }else if(this.checkEnd(this.coord[i].x, this.coord[i].y)){
+        //     context.lineTo(this.coord[0].x, this.coord[0].y);
+        //     context.closePath();
+        //     this.start = false;
+        // }
+        // else{
+        //     console.log("teste");
+        //     context.lineTo(this.coord[i].x, this.coord[i].y);
 
-        if(((this.coord[0].x-t) <= mx) && (mx <= (this.coord[0].x+t))){
-            if(((this.coord[0].y-t) <= my) && (my <= (this.coord[0].y+t))){
-                console.log("fechou poly");
-                return true;
-            }
-        }
-        return false;
-    }
+        // }
+        // context.stroke();
 
-    draw(i){
-
-        console.log("draw "+i);
-        console.log("start "+this.start);
-        if(i == 0 && !this.start) {
-            context.beginPath();
-            context.moveTo(this.coord[0].x, this.coord[0].y);
-            this.start = true;
-        }else if(this.checkEnd(this.coord[i].x, this.coord[i].y)){
-            context.lineTo(this.coord[0].x, this.coord[0].y);
-            context.closePath();
-            this.start = false;
-        }
-        else{
-            console.log("teste");
-            context.lineTo(this.coord[i].x, this.coord[i].y);
-
-        }
-        context.stroke();
-    }
-
-    drawMe() {
-
-
+        context.beginPath();
+        context.strokeStyle = this.color;
+        context.moveTo(this.coord[0].x, this.coord[0].y);
         for(let i = 0; i < this.coord.length; i++){
-            if(i == 0){
-                context.beginPath();
-            }
-
-            context.moveTo(this.coord[i].x, this.coord[i].y);
             context.lineTo(this.coord[i].x, this.coord[i].y);
-            if(i == (this.coord.length - 1))
-                context.closePath();
-
         }
         context.stroke();
+        context.closePath();
+    }
+
+    draw() {
+
+        context.beginPath();
+        context.strokeStyle = this.color;
+        context.moveTo(this.coord[0].x, this.coord[0].y);
+        for(let i = 0; i < this.coord.length; i++){
+            context.lineTo(this.coord[i].x, this.coord[i].y);
+        }
+        context.lineTo(this.coord[0].x, this.coord[0].y);
+        context.stroke();
+        context.closePath();
     }
 
     translate(cx, cy){
@@ -69,21 +62,29 @@ class Polygon {
             this.coord[i].translate(cx,cy);
         }
 
-        this.drawMe();
+        this.draw();
     }
 
     rotate(cx, cy){
         for(let i = 0; i < this.coord.length; i++){
             this.coord[i].rotate(cx, cy);
         }
-        this.drawMe();
+        this.draw();
     }
 
     scale(cx,cy){
         for(let i = 0; i < this.coord.length; i++){
             this.coord[i].scale(cx, cy);
         }
-        this.drawMe();
+        this.draw();
+    }
+
+    selected(){
+        this.color = "red";
+    }
+
+    restore(){
+        this.color = "black";
     }
 
     pick(mx, my){

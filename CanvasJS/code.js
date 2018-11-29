@@ -10,21 +10,21 @@ var mousePressed = false;
 var shapeDragging = false;
 var shapes = [];
 var shape = 0;
+var shapeSelected = null;
 var previousX = 0;
 var previousY = 0;
 
 function reDraw(){
     for (let i = 0; i < shapes.length; i++) {
-        if(shapes[i] instanceof Polygon){
-            var totalCoords = shapes[i].getTotalCoords();
-            for (let j = 0; j < totalCoords; j++) {
-                shapes[i].draw(j);
-            }
-            shapes[i].draw(0);
-        }else{
-            shapes[i].draw();
-        }
+        shapes[i].draw();
     }
+}
+
+function restoreDraw(){
+    for (let i = 0; i < shapes.length; i++) {
+        shapes[i].restore();
+    }
+    reDraw();
 }
 
 function reset(){
@@ -76,28 +76,36 @@ function onDown(event){
                 console.log("criei poligono")
                 shape = new Polygon();
                 shape.addPoint(cx,cy);
-                shape.draw(numberOfClicks);
                 shapes.push(shape);
                 numberOfClicks++;
             }else{
-                if(shape.checkEnd(cx,cy)){
-                    shape.draw(0);
-                    numberOfClicks = 0;
-                }else{
-                    shape.addPoint(cx,cy);
-                    shape.draw(numberOfClicks);
-                    numberOfClicks++;     
-                }
+                // if(shape.checkEnd(cx,cy)){
+                //     shape.draw(0);
+                //     numberOfClicks = 0;
+                // }else{
+                //     shape.addPoint(cx,cy);
+                //     shape.draw(numberOfClicks);
+                //     numberOfClicks++;     
+                // }
+                shape.addPoint(cx,cy);
+
+                numberOfClicks++;
+                shape.drawning(); 
             }
             break;
+        //PICK BUTTON
         case "pick":
             for (let i = 0; i < shapes.length; i++) {
                 //POINT
                 if(shapes[i] instanceof Point){
                     if(shapes[i].pick(cx, cy, 5)){
+                        
+                        if(shapeSelected != null)
+                        shapeSelected.restore();
                         shapeSelected = shapes[i];
+                        shapeSelected.selected();
                         console.log(shapeSelected);
-                        alert("ponto selecionado");
+                        
                         previousX = cx;
                         previousY = cy;
                     }
@@ -105,9 +113,11 @@ function onDown(event){
                 //LINE
                 if(shapes[i] instanceof  Line){
                     if(shapes[i].pick(cx, cy, 20)){
+                        if(shapeSelected != null)
+                            shapeSelected.restore();
                         console.log("add linha");
                         shapeSelected = shapes[i];
-                        alert("reta selecionada");
+                        shapeSelected.selected();
                         previousX = cx;
                         previousY = cy;
                         console.log(shapeSelected);
@@ -117,8 +127,21 @@ function onDown(event){
                 //POLYGON
                 if(shapes[i] instanceof  Polygon){
                     if(shapes[i].pick(cx, cy)){
+                        if(shapeSelected != null)
+                            shapeSelected.restore();
                         shapeSelected = shapes[i];
-                        alert("polígono selecionado");
+                        shapeSelected.selected();
+                        previousX = cx;
+                        previousY = cy;
+                    }
+                }
+                //CIRCLES
+                if(shapes[i] instanceof Circle){
+                    if(shapes[i].pick(cx, cy, 20)){
+                        if(shapeSelected != null)
+                            shapeSelected.restore();
+                        shapeSelected = shapes[i];
+                        shapeSelected.selected();
                         previousX = cx;
                         previousY = cy;
                     }
@@ -131,6 +154,7 @@ function onDown(event){
 
 function onUp(){
     mousePressed = false;
+    shapeDragging = false;
 }
 
 function onMove(event){
@@ -152,23 +176,37 @@ function onMove(event){
                     //POINT
                     if(shapes[i] instanceof Point){
                         if(shapes[i].pick(cx, cy, 5)){
-                            shapes[i].translate(x, y);
+                            shapeSelected = shapes[i];
+                            shapeDragging = true;
                         }
                     }
                     //LINE
                     if(shapes[i] instanceof  Line){
                         console.log(shapes[i].pick(cx, cy, 20));
                         if(shapes[i].pick(cx, cy, 5)){
-                            shapes[i].translate(x,y);
+                            shapeSelected = shapes[i];
+                            shapeDragging = true;
                         }
                     }
-
+                    //CIRCLE
+                    if(shapes[i] instanceof  Circle){
+                        console.log(shapes[i].pick(cx, cy, 20));
+                        if(shapes[i].pick(cx, cy, 5)){
+                            shapeSelected = shapes[i];
+                            shapeDragging = true;
+                        }
+                    }
                     //POLYGON
                     if(shapes[i] instanceof  Polygon){
                         if(shapes[i].pick(cx, cy)){
-                            shapes[i].translate(x, y);
+                            shapeSelected = shapes[i];
+                            shapeDragging = true;
                         }
                     }
+                }
+
+                if(shapeDragging){
+                    shapeSelected.translate(x, y);
                 }
 
                 context.clearRect(0, 0, canvas.width, canvas.height);
@@ -184,10 +222,18 @@ function onMove(event){
 
 document.getElementById('btnPoint').addEventListener('click', function(){
     btnCurrentAction = "Point";
+
+    if(shapes.length > 0){
+        restoreDraw();
+    }
 })
 
 document.getElementById('btnLine').addEventListener('click', function(){
     btnCurrentAction = "Line";
+
+    if(shapes.length > 0){
+        restoreDraw();
+    }
 })
 
 document.getElementById('btnCircle').addEventListener('click', function(){
@@ -196,17 +242,28 @@ document.getElementById('btnCircle').addEventListener('click', function(){
 
 document.getElementById('btnPolygon').addEventListener('click', function(){
     btnCurrentAction = "Polygon";
+
+    if(shapes.length > 0){
+        restoreDraw();
+    }
 })
 
 document.getElementById('btnPick').addEventListener('click', function(){
     btnCurrentAction = "pick";
+
+    if(shapes.length > 0){
+        restoreDraw();
+    }
 })
 
 document.getElementById('btnTranslate').addEventListener('click', function(){
     btnCurrentAction = "translate";
+    restoreDraw();
 })
 
 document.getElementById('btnRotate').addEventListener('click', function(event){
+    if(shapeSelected == null)
+        alert("você não selecionou nenhum objeto.")
     console.log(shapeSelected);
 
     var x = (event.clientX - context.canvas.offsetLeft)-cx;
@@ -233,6 +290,8 @@ document.getElementById('btnRotate').addEventListener('click', function(event){
 })
 
 document.getElementById('btnScale').addEventListener('click', function(){
+    if(shapeSelected == null)
+        alert("você não selecionou nenhum objeto.")
     console.log(shapeSelected);
 
     context.save();
@@ -264,5 +323,13 @@ document.getElementById('btnClear').addEventListener('click', function (){
 canvas.addEventListener("mousedown", onDown);
 canvas.addEventListener("mouseup", onUp);
 canvas.addEventListener("mousemove", onMove);
+
+canvas.addEventListener('dblclick', function(){
+    
+    if(btnCurrentAction == "Polygon"){
+        numberOfClicks = 0;
+        shape.draw();
+    }
+}, false);
 
 

@@ -2,6 +2,7 @@ class Line{
     constructor(cx,cy){
         this.point1 = new Point(cx,cy);
         this.point2;
+        this.color = "black";
     }
 
     addSecondPoint(cx, cy){
@@ -72,9 +73,18 @@ class Line{
         return false;
     }
 
+    selected(){
+        this.color = "red";
+    }
+
+    restore(){
+        this.color = "black";
+    }
+
     draw(){
 
         context.beginPath();
+        context.strokeStyle = this.color;
         context.moveTo(this.point1.x, this.point1.y);
         context.lineTo(this.point2.x, this.point2.y);
         context.stroke();
