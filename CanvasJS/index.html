@@ -3,30 +3,37 @@
 		<meta charset="UTF-8">
 		<title>Canvas API</title>
 		<link rel="stylesheet" type="text/css"  href="style.css">
+		<!-- Compiled and minified CSS -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+		<!-- Compiled and minified JavaScript -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 	</head>
 
 	<body>
-
-		<div>
-			<table width="400" height="80" cellspacing="10">
-				<tr>
-					<td><button id="btnPoint">Point</button></td>
-					<td><button id="btnLine">Line</button></td>
-					<td><button id="btnCircle">Circle</button></td>
-					<td><button id="btnPolygon">Polygon</button></td>
-					<td><button id="btnPick">Pick</button></td>
-					<td><button id="btnTranslate">Translate</button></td>
-					<td><button id="btnRotate">Rotate</button></td>
-					<td><button id="btnScale">Scale</button></td>
-					<td><button id="btnClear">Clear</button></td>
-				</tr>
-			</table>
+		<div class="container">
+			<div class="center-btn row">
+				<h5 class="heading">CanvasJS</h5>
+			</div>
+			<div class="row center-btn">
+				<button class="waves-effect waves-light btn" id="btnPoint">Point</button>
+				<button class="waves-effect waves-light btn" id="btnLine">Line</button>
+				<button class="waves-effect waves-light btn" id="btnCircle">Circle</button>
+				<button class="waves-effect waves-light btn" id="btnPolygon">Polygon</button>
+				<button class="waves-effect waves-light btn" id="btnPick">Pick</button>
+				<button class="waves-effect waves-light btn" id="btnTranslate">Translate</button>
+				<button class="waves-effect waves-light btn" id="btnRotate">Rotate</button>
+				<button class="waves-effect waves-light btn" id="btnScale">Scale</button>
+				<button class="waves-effect waves-light btn" id="btnClear">Clear</button>
+			</div>
+			<div class="row">
+				<div id="canvas_div" class="canvas_div">
+					<canvas id="canvas" height="500" width="800">
+					</canvas>
+				</div>
+			</div>
 		</div>
 
-		<div id="canvas_div" class="canvas_div">
-			<canvas id="canvas" height="500" width="800">
-			</canvas>
-		</div>
 		<script src="utils.js"></script>
 		<script src="point.js"></script>
 		<script src="line.js"></script>
